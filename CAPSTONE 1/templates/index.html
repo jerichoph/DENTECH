@@ -229,11 +229,11 @@
         <span class="close-btn" id="closeModal">&times;</span>
         <h2>Book Appointment</h2>
 
-        <form id="appointmentForm">
-            <input type="text" placeholder="Full Name" required>
-            <input type="text" placeholder="Address" required>
-            <input type="email" placeholder="Email Address" required>
-            <input type="tel" placeholder="Contact Number" required>
+        <form action="/patient_forms" method="GET " id="appointmentForm">
+            <input type="text" name="patient_name" placeholder="Full Name" required>
+            <input type="text" name="patient_address" placeholder="Address" required>
+            <input type="email" name="" placeholder="Email Address" required>
+            <input type="tel" name="patient_contact_number" placeholder="Contact Number" required>
 
             <button type="submit" class="submit-btn">Submit Appointment</button>
         </form>

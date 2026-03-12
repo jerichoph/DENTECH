@@ -12,7 +12,7 @@ app.secret_key = "secret123"  # required for flash messages
 # -----------------------------
 # Initialize Firebase safely
 # -----------------------------
-cred = credentials.Certificate("dentech_key.json")
+cred = credentials.Certificate("CAPSTONE 1/dentech_key.json")
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
@@ -97,6 +97,7 @@ def create_account_page():
 
 @app.route("/patient_forms")
 def p_forms():
+
     return render_template("patientForms.html")
 
 
