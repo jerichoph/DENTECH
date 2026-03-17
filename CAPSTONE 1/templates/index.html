@@ -4,148 +4,347 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capizonda Dental Clinic</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
     <style>
         /* =========================
-           1. GLOBAL & RESET
+             1. GLOBAL & RESET
         ========================== */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        :root { --navy: #1a3a5a; --gold: #eeb455; --white: #ffffff; --dark-bg: #333; }
-        body { background-color: var(--navy); overflow-x: hidden; }
-
-        /* =========================
-           2. NAVIGATION
-        ========================== */
-        header { background-color: var(--navy); padding: 15px 5%; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        .logo-container { display: flex; align-items: center; color: var(--white); }
-        .logo-icon { height: 40px; margin-right: 10px; }
-        .brand-name { font-weight: 600; letter-spacing: 1px; font-size: 1.2rem; }
-        .brand-sub { font-size: 0.7rem; display: block; }
-        .nav-links { display: flex; list-style: none; flex-wrap: wrap; }
-        .nav-links li { margin: 0 15px; }
-        .nav-links a { text-decoration: none; color: var(--white); font-size: 0.85rem; transition: color 0.3s ease; }
-        .nav-links a.active, .nav-links a:hover { color: var(--gold); }
-        .btn-contact { 
-            background: linear-gradient(135deg, #eeb455, #f7d67a);
-            color: var(--white); padding: 10px 25px; border-radius: 25px;
-            text-decoration: none; font-weight: 600; transition: all 0.3s ease;
-        }
-        .btn-contact:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(238,180,85,0.4); }
-
-        /* =========================
-           3. HERO SECTION
-        ========================== */
-        .hero-section { position: relative; height: 70vh; background: url('bg.jpg') center/cover no-repeat; display: flex; align-items: flex-end; justify-content: center; }
-        .hero-section::before { content: ""; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); }
-        .hero-content { position: relative; z-index: 1; width: 90%; max-width: 1200px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; }
-        .user-greeting { color: var(--navy); margin-bottom: 20px; }
-        .patient-img { height: 400px; display: block; border-radius: 20px; }
-        .cta-box { text-align: center; margin-top: 20px; }
-        .cta-box p { color: var(--navy); font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
-        .btn-appointment {
-            background: linear-gradient(135deg, #eeb455, #f7d67a);
-            color: white; padding: 12px 28px; font-weight: 600; border-radius: 25px; text-decoration: none;
-            text-transform: uppercase; transition: all 0.3s ease; display: inline-block;
-        }
-        .btn-appointment:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(238,180,85,0.4); }
-
-        /* =========================
-           4. QUICK ACTION BUTTONS
-        ========================== */
-        .quick-actions { display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap; justify-content: center; z-index: 10; }
-        .btn-action {
-            background: linear-gradient(135deg, #1a3a5a, #2e5b8f);
-            color: var(--white); border: none; padding: 14px 22px;
-            border-radius: 16px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
-            display: flex; align-items: center; gap: 10px; transition: all 0.3s ease; min-width: 160px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2); text-transform: uppercase;
-        }
-        .btn-action img { width: 20px; height: 20px; filter: brightness(0) invert(1); }
-        .btn-action:hover { transform: translateY(-4px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.3); background: linear-gradient(135deg, #2e5b8f, #3c74b0); }
-        .btn-action.google { background: linear-gradient(135deg, #4285F4, #357ae8); }
-        .btn-action.google:hover { background: linear-gradient(135deg, #357ae8, #2a65c4); }
-
-        /* =========================
-           5. CHATBOT UI
-        ========================== */
-        .chatbot { position: fixed; bottom: 20px; right: 20px; width: 320px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 20px; box-shadow: 0 12px 30px rgba(0,0,0,0.3); z-index: 1000; font-family: 'Poppins', sans-serif; overflow: hidden; }
-        .chatbot-header { background: var(--gold); color: white; padding: 15px; font-weight: 600; text-align: center; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 3px 10px rgba(0,0,0,0.2); border-radius: 20px 20px 0 0; }
-        .chatbot-messages { height: 260px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px 14px; border-radius: 18px; font-size: 0.85rem; max-width: 80%; word-wrap: break-word; line-height: 1.4; }
-        .message.bot { background: #f1f0f0; align-self: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .message.user { background: var(--gold); color: white; align-self: flex-end; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .chatbot-input { display: flex; border-top: 1px solid #eee; }
-        .chatbot-input input { flex: 1; padding: 12px 15px; border: none; outline: none; border-radius: 0 0 0 20px; }
-        .chatbot-input button { background: linear-gradient(135deg, #eeb455, #f7d67a); color: white; border: none; padding: 0 20px; cursor: pointer; font-weight: 600; border-radius: 0 0 20px 0; transition: all 0.3s ease; }
-        .chatbot-input button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(238,180,85,0.4); }
-
-        /* CHATBOT QUICK BUTTONS */
-        .chatbot-buttons button { 
-            background: linear-gradient(135deg, #1a3a5a, #2e5b8f);
-            color: var(--white); border: none; padding: 10px 16px;
-            border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 0.85rem;
-            margin: 4px; transition: all 0.3s ease; text-transform: uppercase; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-        .chatbot-buttons button:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.25); background: linear-gradient(135deg, #2e5b8f, #3c74b0); }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .hero-content { flex-direction: column; align-items: center; }
-            .patient-img { height: 300px; margin-top: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Kumbh Sans', sans-serif;
         }
 
-        /* APPOINTMENT MODAL */
-        .modal {
-            display: none;
+        :root {
+            /* Base Colors */
+            --navy: #156699;
+            --gold: #FFA2AD;
+            --gold-light: #FFA2AD;
+            --white: #ffffff;
+
+            /* Professional Gradients */
+            --grad-gold: linear-gradient(135deg, #FFA2AD 0%, #ff7a8a 100%);
+            /* Updated Navy Gradient */
+            --grad-navy: linear-gradient(180deg, #156699 0%, #8CD3FF 100%);
+            --grad-navy2: linear-gradient(180deg,#8CD3FF 0%, #156699 100%);
+            --grad-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 100%);
+            --grad-surface: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.5));
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative; /* Necessary for the background layer */
+        }
+
+        /* This creates the blurred background layer */
+        body::before {
+            content: "";
             position: fixed;
-            z-index: 2000;
-            left: 0;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.6);
+            /* Your background image */
+            background: url("{{ url_for('static', filename='img/bg.jpg') }}") no-repeat center center;
+            background-size: cover;
+            
+            /* BLUR EFFECT */
+            filter: blur(8px); /* Adjust '8px' to make it more or less blurry */
+            -webkit-filter: blur(8px);
+            
+            /* Slightly darken or lighten if needed */
+            background-color: rgba(0,0,0,0.1); 
+            
+            z-index: -1; /* Keeps it behind everything */
+            transform: scale(1.1); /* Prevents white edges caused by blurring */
+        }
+
+        /* Remove the background from the hero section so the body background shows through */
+        .hero-section {
+            position: relative;
+            height: 70vh;
+            background: transparent; 
+            display: flex; 
+            align-items: flex-end; 
             justify-content: center;
+            flex: 1;
+        }
+
+        /* Ensure the overlay doesn't double-darken the image */
+        .hero-section::before {
+            display: none; 
+        }
+
+        /* =========================
+             2. NAVIGATION (Gradient applied)
+        ========================== */
+        header {
+            background: var(--grad-navy); /* Applied requested gradient */
+            padding: 25px 5%;
+            
+            box-shadow: 0 2px 10px rgba(0,0,0,0.9);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        .modal-content {
-            background: white;
-            padding: 30px;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo-icon { 
+            height: 65px; 
+            margin-right: 8px; 
+            mix-blend-mode: lighten;
+        }
+        .brand-name { 
+            font-weight: 600; 
+            letter-spacing: 1px; 
+            font-size: 25px; 
+            display: block; 
+        }
+        .brand-sub { 
+            font-size: 15px; 
+            display: block; 
+            opacity: 0.9; }
+
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            align-items: center; 
+        }
+        .nav-links li { 
+            margin: 0 20px; 
+        }
+        .nav-links a { 
+            text-decoration: none; 
+            color: var(--white); 
+            font-size: 20px; 
+            font-weight: 400; 
+            transition: all 0.3s ease; 
+        }
+        .nav-links a:hover, .nav-links a.active { 
+            color: var(--gold-light); 
+        }
+
+        .profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-left: 20px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--white);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .user-info-brief { 
+            color: var(--white); 
+            text-align: right; }
+        .user-info-brief span { 
+            display: block; 
+            font-size: 23px; 
+            font-weight: 600; }
+        .user-info-brief small { 
+            font-size: 12px; 
+            opacity: 0.9; }
+
+        /* =========================
+             3. HERO SECTION
+        ========================== */
+        
+
+        .hero-content {
+            position: relative; z-index: 1; width: 90%; max-width: 1200px;
+            display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap;
+        }
+
+        .user-greeting { 
+            color: #ffffff; 
+            margin-bottom: 300px; 
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); 
+        }
+        .patient-img { 
+            height: 600px; 
+            border-radius: 20px; 
+        }
+        .cta-box { 
+            background: var(--grad-navy);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.9);
             border-radius: 20px;
-            width: 350px;
+            margin-bottom: 250px;
+            text-align: center;
+            margin-top: 20px; 
+            padding: 40px;
+        }
+        .cta-box p { 
+            color: #ffffff; 
+            font-weight: 600; 
+            margin-bottom: 50px; 
+        }
+
+        .cta-box img {
+            height: 65px; 
+            border-radius: 20px;
+            mix-blend-mode: lighten;
+        }
+        
+        .btn-appointment {
+            background: var(--grad-gold);
+            color: white; 
+            padding: 12px 28px; 
+            font-weight: 600; 
+            border-radius: 15px;
+            text-decoration: none; 
+            text-transform: uppercase; 
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        .btn-appointment:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(241, 134, 134, 0.4); }
+
+        /* =========================
+             4. FOOTER (Gradient applied)
+        ========================== */
+        footer {
+            background: var(--grad-navy2); /* Applied requested gradient */
+            color: white;
+            padding: 50px 5%;
+            text-align: center;
+            
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-text { font-size: 0.85rem; opacity: 0.9; }
+
+    /* =========================
+                4. FLOATING CHATBOT (Modal Style)
+            ========================== */
+            /* The Launcher Button */
+        .chatbot-launcher {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1001;
+            transition: transform 0.3s ease;
+        }
+
+        .chatbot-launcher:hover { transform: scale(1.1); }
+        .chatbot-launcher img { width: 30px; filter: brightness(0) invert(1); }
+
+        /* The Chat Window (Hidden by default) */
+        .chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 320px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            overflow: hidden;
+            display: none; /* Controlled by JS */
+            flex-direction: column;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chatbot-header {
+            background: var(--gold);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
             text-align: center;
         }
 
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: var(--navy);
+        .chatbot-messages {
+            height: 300px;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 10px;
-            border: 1px solid #ddd;
+        .message { padding: 10px 14px; border-radius: 18px; font-size: 0.85rem; max-width: 80%; }
+        .message.bot { background: #f1f0f0; align-self: flex-start; }
+        .message.user { background: var(--gold); color: white; align-self: flex-end; }
+
+        .chatbot-input { display: flex; border-top: 1px solid #eee; }
+        .chatbot-input input { flex: 1; padding: 12px; border: none; outline: none; }
+        .chatbot-input button { background: var(--gold); color: white; border: none; padding: 0 15px; cursor: pointer; }
+
+        .chatbot-buttons { padding: 8px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
+        .chatbot-buttons button {
+            background: #1a3a5a; color: white; border: none; padding: 6px 12px;
+            border-radius: 10px; font-size: 0.75rem; cursor: pointer;
         }
 
-        .submit-btn {
-            margin-top: 10px;
-            padding: 12px;
-            width: 100%;
-            border: none;
-            border-radius: 20px;
-            background: linear-gradient(135deg,#eeb455,#f7d67a);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
 
-        .close-btn {
-            float: right;
-            font-size: 20px;
-            cursor: pointer;
+        /* =========================
+             6. MODAL
+        ========================== */
+        .modal {
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center;
+        }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 350px; text-align: center; }
+        .modal-content input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ddd; }
+        .submit-btn { width: 100%; padding: 12px; border: none; border-radius: 20px; background: var(--grad-gold); color: white; font-weight: 600; cursor: pointer; }
+        .close-btn { float: right; font-size: 20px; cursor: pointer; }
+
+        /* ADDED: Styling to make the calendar selected date look like your navy theme */
+        .flatpickr-day.selected { background: var(--navy) !important; border-color: var(--navy) !important; }
+
+        @media (max-width: 768px) {
+            .hero-content { flex-direction: column; align-items: center; text-align: center; }
+            .user-info-brief, .nav-links { display: none; }
+            .footer-content { justify-content: center; flex-direction: column; }
         }
     </style>
 </head>
@@ -153,163 +352,151 @@
 
 <header>
     <nav class="navbar">
-        <div class="logo-container">
-            <img src="/templates/img/logo.png" alt="Capizonda Logo" class="logo-icon">
+        <a href="/google-auth#" class="logo-container">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Capizonda Logo" class="logo-icon">
             <div class="logo-text">
                 <span class="brand-name">CAPIZONDA</span>
                 <span class="brand-sub">DENTAL CLINIC</span>
             </div>
-        </div>
+        </a>
 
         <ul class="nav-links">
             <li><a href="/index.html" class="active">HOME</a></li>
             <li><a href="/about.html">ABOUT</a></li>
             <li><a href="#">SERVICES ▾</a></li>
-            <li><a href="/forms.html">PATIENT FORMS</a></li>
         </ul>
 
-        <div class="quick-actions">
-            <button class="btn-action google">
-                <img src="https://img.icons8.com/ios-filled/50/ffffff/google-logo.png" alt="Google"> Notifications
-            </button>
-            <button class="btn-action">
-                <img src="https://img.icons8.com/ios-filled/50/ffffff/time.png" alt="Schedule"> Schedule
-            </button>
-            <button class="btn-action">
-                <img src="https://img.icons8.com/ios-filled/50/ffffff/card-exchange.png" alt="Payment"> Pay Online
-            </button>
-            <button class="btn-action">
-                <img src="https://img.icons8.com/ios-filled/50/ffffff/calendar.png" alt="Calendar"> Calendar
-            </button>
-        </div>
-
-        <div class="nav-actions">
-            <a href="#" class="btn-contact">CONTACT US</a>
+        <div class="profile-nav">
+            <div class="user-info-brief">   
+                <span>{{ name }}</span>
+                <small>Patient Account</small>
+            </div>
+            <a href="/patient-profile">
+                <img src="https://ui-avatars.com/api/?name={{ name }}&background=ffffff&color=156699" alt="Profile" class="profile-img">
+            </a>
         </div>
     </nav>
 </header>
 
 <main class="hero-section">
     <div class="hero-content">
+        <img src="{{ url_for('static', filename='img/woman2.png') }}" alt="Happy Patient" class="patient-img">
         <div class="user-greeting">
             <h1>Welcome, {{ name }}!</h1>
-            <p>Logged in as: {{ email }}</p>
+            <p>Ready for a brighter smile today?</p>
         </div>
-        <img src="/img/woman.png" alt="Happy Patient" class="patient-img">
 
         <div class="cta-box">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Capizonda Logo">
             <p>Your smile is our passion!</p>
-            <!-- Added ID here -->
             <a href="#" class="btn-appointment" id="openAppointment">Book an Appointment</a>
         </div>
     </div>
 </main>
 
-<div class="chatbot">
+<footer>
+    <div class="footer-content">
+        <div class="logo-text" style="text-align: left;">
+            <span class="brand-name" style="font-size: 1rem;">CAPIZONDA DENTAL</span>
+            <span class="brand-sub" style="font-size: 0.6rem;">Trusted Care Since 2024</span>
+        </div>
+        <div class="footer-text">
+            &copy; 2026 Capizonda Dental Clinic. All Rights Reserved.
+        </div>
+        <div class="nav-links">
+            <a href="#" style="font-size: 0.7rem; margin-left: 10px;">Privacy Policy</a>
+            <a href="#" style="font-size: 0.7rem; margin-left: 10px;">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+
+<div class="chatbot-launcher" id="chatLauncher">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/chat--v1.png" alt="Chat Icon">
+</div>
+
+<div class="chatbot-window" id="chatWindow">
     <div class="chatbot-header">Clinic Assistant</div>
     <div class="chatbot-messages" id="chat-box">
         <div class="message bot">Hi there! How can we make your smile brighter today? 😁</div>
     </div>
-
     <div class="chatbot-buttons">
         <button data-msg="Clinic Info">Clinic Info</button>
         <button data-msg="Appointments">Appointments</button>
-        <button data-msg="Treatments & Services">Treatments & Services</button>
+        <button data-msg="Treatments">Treatments</button>
     </div>
-
     <div class="chatbot-input">
         <input type="text" id="chat-input" placeholder="Ask a question...">
         <button id="send-btn">Send</button>
     </div>
 </div>
 
-<!-- APPOINTMENT MODAL -->
 <div id="appointmentModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
         <h2>Book Appointment</h2>
-
-        <form action="/patient_forms" method="GET " id="appointmentForm">
-            <input type="text" name="patient_name" placeholder="Full Name" required>
-            <input type="text" name="patient_address" placeholder="Address" required>
-            <input type="email" name="" placeholder="Email Address" required>
-            <input type="tel" name="patient_contact_number" placeholder="Contact Number" required>
-
+        <form id="appointmentForm">
+            <input type="text" placeholder="Full Name" required>
+            <input type="email" placeholder="Email Address" required>
+            <input type="tel" placeholder="Contact Number" required>
+            <input type="text" id="appointmentDate" placeholder="Select Appointment Date" required readonly>
+            
             <button type="submit" class="submit-btn">Submit Appointment</button>
         </form>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <script>
-const chat = document.getElementById('chat-box');
-const buttons = document.querySelectorAll('.chatbot-buttons button');
+    // 1. Toggle Chatbot Modal
+    const launcher = document.getElementById('chatLauncher');
+    const windowChat = document.getElementById('chatWindow');
 
-buttons.forEach(button => {
-    button.addEventListener('click', () => {
-        const userMessage = button.getAttribute('data-msg');
-        addMessage('user', userMessage);
+    launcher.onclick = () => {
+        const isOpen = windowChat.style.display === 'flex';
+        windowChat.style.display = isOpen ? 'none' : 'flex';
+    };
 
-        let botMessage = '';
-        if (userMessage === 'Clinic Info') {
-            botMessage = `Our clinic is open Mon–Fri, 9 AM–6 PM.
-We’re located at [Address]. Parking is available.
-Yes, we accept walk-ins, but appointments are recommended.`;
-        } else if (userMessage === 'Appointments') {
-            botMessage = `You can book an appointment online or walk in.
-Would you like me to check available slots?`;
-        } else if (userMessage === 'Treatments & Services') {
-            botMessage = `We offer teeth cleaning, whitening, fillings, braces, and more.
-We provide pediatric and adult dental care.`;
-        } else {
-            botMessage = "I don't understand that. Please choose one of the options above.";
+    // 2. Chat Logic
+    const chatBox = document.getElementById('chat-box');
+    document.querySelectorAll('.chatbot-buttons button').forEach(btn => {
+        btn.onclick = () => {
+            const msg = btn.getAttribute('data-msg');
+            addMsg('user', msg);
+            setTimeout(() => addMsg('bot', `I'd be happy to help with ${msg}! What specific info do you need?`), 600);
         }
-
-        setTimeout(() => addMessage('bot', botMessage), 500);
     });
-});
 
-function addMessage(sender, text) {
-    const msgDiv = document.createElement('div');
-    msgDiv.className = `message ${sender}`;
-    msgDiv.textContent = text;
-    chat.appendChild(msgDiv);
-    chat.scrollTop = chat.scrollHeight;
-}
-</script>
-
-<script>
-const modal = document.getElementById("appointmentModal");
-const openBtn = document.getElementById("openAppointment");
-const closeBtn = document.getElementById("closeModal");
-const form = document.getElementById("appointmentForm");
-
-if(openBtn){
-    openBtn.addEventListener("click", function(e){
-        e.preventDefault();
-        modal.style.display = "flex";
-    });
-}
-
-if(closeBtn){
-    closeBtn.addEventListener("click", function(){
-        modal.style.display = "none";
-    });
-}
-
-window.addEventListener("click", function(e){
-    if(e.target === modal){
-        modal.style.display = "none";
+    function addMsg(s, t) {
+        const d = document.createElement('div'); d.className = `message ${s}`; d.textContent = t;
+        chatBox.appendChild(d); chatBox.scrollTop = chatBox.scrollHeight;
     }
-});
 
-if(form){
-    form.addEventListener("submit", function(e){
-        e.preventDefault();
-        alert("Appointment request submitted! Our clinic will contact you shortly.");
-        form.reset();
-        modal.style.display = "none";
+    // 3. Appointment Modal Logic
+    const modal = document.getElementById("appointmentModal");
+    document.getElementById("openAppointment").onclick = (e) => { e.preventDefault(); modal.style.display = "flex"; };
+    document.getElementById("closeModal").onclick = () => modal.style.display = "none";
+    window.onclick = (e) => { 
+        if(e.target == modal) modal.style.display = "none";
+        // Also close chat if clicking outside of it
+        if(!windowChat.contains(e.target) && !launcher.contains(e.target)) {
+            windowChat.style.display = 'none';
+        }
+    };
+
+    // ADDED: Initialize the Calendar with Disabled Dates
+    flatpickr("#appointmentDate", {
+        minDate: "today",           // No past dates
+        dateFormat: "F j, Y",       // Format: March 17, 2026
+        disable: [
+            "2026-03-25",           // Doctor's vacation start
+            "2026-03-26",           // Doctor's vacation end
+            function(date) {
+                // Disable Sundays (return true to disable)
+                return (date.getDay() === 0);
+            }
+        ]
     });
-}
 </script>
 
 </body>

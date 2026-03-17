@@ -33,7 +33,7 @@ CLIENT_ID = "921529543911-okjlt4tgb56admos6msdlho9c6ibive8.apps.googleuserconten
 @app.route("/google-auth", methods=["POST"])
 def login_g_auth():
     token = request.form["token"]
-
+    
     try:
         google_account = id_token.verify_oauth2_token(
             token,
@@ -55,6 +55,8 @@ def login_g_auth():
         }, merge=True)
 
         return render_template("index.html", email=email, name=name)
+    
+    
 
     except ValueError:
         return render_template("error.html", message="Invalid Google token")
@@ -110,6 +112,12 @@ def about_customer():
 @app.route("/chatbot")
 def chatbot_q():
     return render_template("index.html")
+    
+@app.route("/patient-profile")
+def p_profile():
+    return render_template("/patient-profile.html")
+
+
 
 
 
