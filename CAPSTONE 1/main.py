@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import firebase_admin
 from firebase_admin import credentials, firestore
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from datetime import datetime, UTC
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "secret123"  # required for flash messages
@@ -21,106 +21,124 @@ db = firestore.client()
 Account_clients = "manual_create_account"
 
 
-@app.route("/sign_up_google")
-def index():
-    return render_template("index.html")
-
-
 # makita nisa sa diri https://console.cloud.google.com/auth/clients
 CLIENT_ID = "921529543911-okjlt4tgb56admos6msdlho9c6ibive8.apps.googleusercontent.com"
 
+# -----------------------------
+# 1. LANDING PAGE (Index)
+# -----------------------------
+@app.route("/", methods=["GET"])
+def index():
+    name = session.get('name', 'Guest')
+    email = session.get('email', '')
+    return render_template("index.html", name=name, email=email)
+# -----------------------------
+# MANUAL LOGIN ROUTE
+# -----------------------------
 
+@app.route("/login", methods=["POST"])
+def login_manual():
+    username = request.form.get("UserName")
+    password = request.form.get("Password")
+
+    # Search for user in Firestore
+    user_query = db.collection(Account_clients).where("username", "==", username).get()
+
+    if user_query:
+        user_data = user_query[0].to_dict()
+        # Verify the hashed password
+        if check_password_hash(user_data['password'], password):
+            session['name'] = user_data['firstname']
+            session['email'] = user_data.get('email', '') # Optional
+            return redirect(url_for("index"))
+    
+    flash("Invalid username or password!")
+    return redirect(url_for("index"))
+
+# -----------------------------
+# 2. GOOGLE AUTH ROUTE
+# -----------------------------
 @app.route("/google-auth", methods=["POST"])
 def login_g_auth():
     token = request.form["token"]
-    
     try:
-        google_account = id_token.verify_oauth2_token(
-            token,
-            requests.Request(),
-            CLIENT_ID
-        )
+        google_account = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+        
+        # Store user info in session
+        session['uid'] = google_account["sub"]
+        session['email'] = google_account["email"]
+        session['name'] = google_account.get("name", "User")
 
-        uid = google_account["sub"]
-        email = google_account["email"]
-        name = google_account.get("name", "")
-
-        # Save to Firebase
-        db.collection("google_create_account").document(uid).set({
-            "uid": uid,
-            "email": email,
-            "name": name,
+        # Save/Update in Firebase
+        db.collection("google_create_account").document(session['uid']).set({
+            "uid": session['uid'],
+            "email": session['email'],
+            "name": session['name'],
             "provider": "google",
-            "created_at": datetime.now(UTC).isoformat()
+            "last_login": datetime.now(UTC).isoformat()
         }, merge=True)
 
-        return render_template("index.html", email=email, name=name)
-    
-    
-
+        return redirect(url_for("index")) # Redirect to landing page after login
     except ValueError:
         return render_template("error.html", message="Invalid Google token")
 
-
-@app.route("/", methods=["GET", "POST"])
-def create_account_page():
+# -----------------------------
+# 3. MANUAL SIGN UP
+# -----------------------------
+@app.route("/sign-up", methods=["GET", "POST"])
+def sign_up():
     if request.method == "POST":
         firstname = request.form["FirstName"]
-        lastname = request.form["LastName"]
-        mobile_number = request.form["MobileNumber"]
         username = request.form["UserName"]
         password = request.form["Password"]
 
-        # 🔹 Check if username already exists
-        exist_account = db.collection(Account_clients)
-        check_account = exist_account.where("username", "==", username).get()
-
+        # Check if exists
+        check_account = db.collection(Account_clients).where("username", "==", username).get()
         if check_account:
-            flash("May naka-register na nga account sa sini nga username!")
-            return redirect(url_for("create_account_page"))
+            flash("Username already taken!")
+            return redirect(url_for("sign_up"))
 
-        # 🔐 Hash the password before saving
         hashed_password = generate_password_hash(password)
-
-        # Add new user
-        exist_account.add({
+        
+        # Add to DB
+        db.collection(Account_clients).add({
             "firstname": firstname,
-            "lastname": lastname,
-            "mobile_number": mobile_number,
             "username": username,
             "password": hashed_password,
             "created_at": datetime.now(UTC).isoformat()
         })
 
-        return redirect(url_for("about_customer"))
+        # Log them in automatically
+        session['name'] = firstname
+        return redirect(url_for("index"))
 
     return render_template("sign_up_customer.html")
 
 
+# -----------------------------
+# 4. LOGOUT (To clear the header name)
+# -----------------------------
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
+
+# -----------------------------
+# OTHER ROUTES
+# -----------------------------
 @app.route("/patient_forms")
 def p_forms():
-
     return render_template("patientForms.html")
-
 
 @app.route("/about_customer_side")
 def about_customer():
     return render_template("aboutcustomer_side.html")
 
-
-
-@app.route("/chatbot")
-def chatbot_q():
-    return render_template("index.html")
-    
 @app.route("/patient-profile")
 def p_profile():
-    return render_template("/patient-profile.html")
-
-
-
-
-
+    # Pass session data to profile too
+    name = session.get('name', 'Guest')
+    return render_template("patient-profile.html", name=name)
 if __name__ == "__main__":
     app.run(debug=True)
 
