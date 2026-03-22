@@ -32,6 +32,7 @@ def index():
     name = session.get('name', 'Guest')
     email = session.get('email', '')
     return render_template("index.html", name=name, email=email)
+
 # -----------------------------
 # MANUAL LOGIN ROUTE
 # -----------------------------
@@ -49,7 +50,7 @@ def login_manual():
         # Verify the hashed password
         if check_password_hash(user_data['password'], password):
             session['name'] = user_data['firstname']
-            session['email'] = user_data.get('email', '') # Optional
+            session['email'] = user_data.get('email', '')
             return redirect(url_for("index"))
     
     flash("Invalid username or password!")
@@ -85,38 +86,36 @@ def login_g_auth():
 # -----------------------------
 # 3. MANUAL SIGN UP
 # -----------------------------
-@app.route("/sign-up", methods=["GET", "POST"])
+@app.route("/sign-up", methods=["POST"]) # Changed to POST only for Modal
 def sign_up():
-    if request.method == "POST":
-        firstname = request.form["FirstName"]
-        username = request.form["UserName"]
-        password = request.form["Password"]
+    firstname = request.form["FirstName"]
+    lastname = request.form["LastName"]
+    username = request.form["UserName"]
+    password = request.form["Password"]
+    mobile = request.form["MobileNumber"]
 
-        # Check if exists
-        check_account = db.collection(Account_clients).where("username", "==", username).get()
-        if check_account:
-            flash("Username already taken!")
-            return redirect(url_for("sign_up"))
-
-        hashed_password = generate_password_hash(password)
-        
-        # Add to DB
-        db.collection(Account_clients).add({
-            "firstname": firstname,
-            "username": username,
-            "password": hashed_password,
-            "created_at": datetime.now(UTC).isoformat()
-        })
-
-        # Log them in automatically
-        session['name'] = firstname
+    check_account = db.collection(Account_clients).where("username", "==", username).get()
+    if check_account:
+        flash("Username already taken!")
         return redirect(url_for("index"))
 
-    return render_template("sign_up_customer.html")
+    hashed_password = generate_password_hash(password)
+    
+    db.collection(Account_clients).add({
+        "firstname": firstname,
+        "lastname": lastname,
+        "username": username,
+        "password": hashed_password,
+        "mobile_number": mobile,
+        "created_at": datetime.now(UTC).isoformat()
+    })
+
+    session['name'] = firstname
+    return redirect(url_for("index"))
 
 
 # -----------------------------
-# 4. LOGOUT (To clear the header name)
+# 4. LOGOUT
 # -----------------------------
 @app.route("/logout")
 def logout():
