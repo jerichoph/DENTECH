@@ -61,16 +61,24 @@ def login_manual():
 # -----------------------------
 @app.route("/google-auth", methods=["POST"])
 def login_g_auth():
-    token = request.form["token"]
+    token = request.form.get("token")
+    if not token:
+        return render_template("index.html", error="No token provided")
+
     try:
-        google_account = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+        # Added clock_skew_in_seconds=10 to handle slight time sync issues
+        google_account = id_token.verify_oauth2_token(
+            token, 
+            requests.Request(), 
+            CLIENT_ID, 
+            clock_skew_in_seconds=10
+        )
         
-        # Store user info in session
         session['uid'] = google_account["sub"]
         session['email'] = google_account["email"]
         session['name'] = google_account.get("name", "User")
 
-        # Save/Update in Firebase
+        # Save to Firebase
         db.collection("google_create_account").document(session['uid']).set({
             "uid": session['uid'],
             "email": session['email'],
@@ -79,14 +87,17 @@ def login_g_auth():
             "last_login": datetime.now(UTC).isoformat()
         }, merge=True)
 
-        return redirect(url_for("index")) # Redirect to landing page after login
-    except ValueError:
-        return render_template("error.html", message="Invalid Google token")
+        return redirect(url_for("index"))
+
+    except ValueError as e:
+        print(f"Token validation failed: {e}")
+        flash("Google Login failed. Please try again.")
+        return redirect(url_for("index"))
 
 # -----------------------------
 # 3. MANUAL SIGN UP
 # -----------------------------
-@app.route("/sign-up", methods=["POST"]) # Changed to POST only for Modal
+@app.route("/sign-up", methods=["POST"])
 def sign_up():
     firstname = request.form["FirstName"]
     lastname = request.form["LastName"]
@@ -135,9 +146,17 @@ def about_customer():
 
 @app.route("/patient-profile")
 def p_profile():
-    # Pass session data to profile too
     name = session.get('name', 'Guest')
     return render_template("patient-profile.html", name=name)
+
+@app.route("/admin_dashboard")
+def admin_dashboard():
+    return render_template("admin_dashboard.html")
+
+@app.route("/admin_login")
+def admin_login():
+    return render_template("admin_login.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
 
